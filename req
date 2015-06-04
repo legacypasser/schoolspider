@@ -1,0 +1,43 @@
+
+# _*_ coding:utf-8 _*_
+import httplib
+import urllib2
+import json
+from urllib import urlencode
+from urllib import unquote
+from urllib import urlopen
+import json.decoder
+
+fixed = "http://data.api.gkcx.eol.cn/soudaxue/queryschool.html?messtype=jsonp&province=&schooltype=&size=10&page="
+
+idstrs = []
+schoolstrs = []
+provincestrs = []
+
+for i in  range(1, 277):
+    if i % 10 == 0:
+        print(bytes(i)+ "finished")
+    response = urlopen(fixed + bytes(i))
+    text = response.read()
+    result = text.split("\n")
+    for item in result:
+        pair = item.split(":")
+        if "schoolid" in pair[0]:
+            idstrs.append(pair[1][2: -2] + "\n")
+        if "schoolname" in pair[0]:
+            schoolstrs.append(pair[1][2: -2] + "\n")
+        if "province" in pair[0]:
+            provincestrs.append(pair[1][2: -2] + "\n")
+
+ids = open("ids.txt", "w")
+ids.writelines(idstrs)
+ids.close()
+
+schools = open("schools.txt", "w")
+schools.writelines(schoolstrs)
+schools.close()
+
+provinces = open("provinces.txt", "w")
+provinces.writelines(provincestrs)
+provinces.close()
+
